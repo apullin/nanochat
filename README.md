@@ -1,3 +1,36 @@
+# Running on a GH200
+
+The only changes in this branch are some edits to the `uv.lock` and `pyproject.toml` to make it easy to get up and running on a GH200.
+The main script is also changed to run on on just a single node.  
+(TODO - can `nproc_per_node > 1` be used across mutliple GH200's?)
+
+The biggest difference is that we will need to build triton from source, which uv will handle for you with the changes to uv.lock in this commit.
+Pytorch is also changed to version `2.9.0+cu128`, as there does not appear to tbe a `2.8.0+cu128` wheel available for aarch64.
+
+This is tested on a GH200 rented from Lambda Labs using their "Lambda Stack 24.04", you'll need to do a few steps first.
+
+Install some apt packages to support building:
+```
+sudo apt update
+sudo apt install -y build-essential cmake ninja-build clang lld git
+sudo apt install libstdc++-14-dev
+```
+
+Then set some environment vars:
+```
+export CUDA_HOME=/usr/lib/cuda
+export LD_LIBRARY_PATH="/lib/aarch64-linux-gnu:$CUDA_HOME/lib64:${LD_LIBRARY_PATH}"
+```
+
+Finally, follow the normal startup:
+```
+bash speedrun.sh
+```
+
+Building Triton takes ~a few minutes.
+
+Rest of the README below as-is from main nanochat repo:
+
 # nanochat
 
 ![nanochat logo](dev/nanochat.png)
